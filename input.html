@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Request Branding SOREX</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        input, select, textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #ff2222;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff2929;
+        }
+        small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        img {
+            width: 100%; /* Full selebar container */
+            max-height: 200px; /* Batas tinggi maksimal, kamu bisa adjust */
+            object-fit: contain; /* Biar isi gambarnya tetap terlihat proporsional */
+            margin-bottom: 10px; /* Jarak dengan heading */
+        }
+
+        #other_tools_wrapper {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <img src="sorex3.png" alt="Logo SOREX">
+        <h1>REQUEST BRANDING</h1>
+        <h2>SOREX (JT, DK & LP)</h2>
+        <form action="submit_form.php" method="post" enctype="multipart/form-data">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+
+            <label for="area_sales">Area Sales:</label>
+            <select id="area_sales" name="area_sales" required>
+                <option value="">-- Pilih Area --</option>
+                <option value="JT">JT</option>
+                <option value="DK">DK</option>
+                <option value="LP">LP</option>
+            </select>
+
+            <label for="sales_code">Nama Sales:</label>
+            <input type="text" id="sales_code" name="sales_code" placeholder="Masukkan name sales" required>
+
+            <label for="store_name">Nama Toko:</label>
+            <input type="text" id="store_name" name="store_name" placeholder="Masukkan nama toko" required>
+
+            <label for="spv_name">Nama SPV:</label>
+            <input type="text" id="spv_name" name="spv_name" placeholder="Masukkan nama SPV" required>
+
+            <label for="location">Lokasi:</label>
+            <input type="text" id="location" name="location" placeholder="Masukkan lokasi" required>
+
+            <label for="request_type">Jenis Permintaan:</label>
+            <select id="request_type" name="request_type" required>
+                <option value="">-- Pilih Jenis Permintaan --</option>
+                <option value="BARU">Baru</option>
+                <option value="PERMAJAAN">Permajaan</option>
+            </select>
+
+            <label for="branding_tools">Jenis Tools Branding:</label>
+            <select id="branding_tools" name="branding_tools" onchange="toggleOtherTools()" required>
+                <option value="">-- Pilih Tools --</option>
+                <option value="SPANDUK KOREA">SPANDUK KOREA</option>
+                <option value="SPANDUK KOREA (PAKAI MATA AYAM)">SPANDUK KOREA (PAKAI MATA AYAM)</option>
+                <option value="SPANDUK CHINA">SPANDUK CHINA</option>
+                <option value="SPANDUK CHINA (PAKAI MATA AYAM)">SPANDUK CHINA (PAKAI MATA AYAM)</option>
+                <option value="POSTER DOFF">POSTER DOFF</option>
+                <option value="POSTER GLOSSY">POSTER GLOSSY</option>
+                <option value="STIKER DOFF">STIKER DOFF</option>
+                <option value="STIKER GLOSSY">STIKER GLOSSY</option>
+                <option value="STIKER ONEWAY">STIKER ONEWAY</option>
+                <option value="STIKER BACKLITE (UNTUK NEONBOX)">STIKER BACKLITE (UNTUK NEONBOX)</option>
+                <option value="STIKER OVERPRINT (UNTUK NEONBOX)">STIKER OVERPRINT (UNTUK NEONBOX)</option>
+                <option value="AKRILIK KAPUR / PVC">AKRILIK KAPUR / PVC</option>
+                <option value="AKRILIK BENING">AKRILIK BENING</option>
+                <option value="IMPRABOARD">IMPRABOARD</option>
+                <option value="NEONBOX">NEONBOX</option>
+                <option value="ART PAPER / POP">ART PAPER / POP</option>
+                <option value="X BANNER">X BANNER</option>
+                <option value="ROLL UP BANNER">ROLL UP BANNER</option>
+                <option value="TRIPOD BANNER">TRIPOD BANNER</option>
+                <option value="Lainnya">Lainnya</option>
+            </select>
+            <div id="other_tools_wrapper">
+                <textarea id="other_tools" name="other_tools" placeholder="Masukkan jenis tools lainnya..."></textarea>
+            </div>
+
+            <label for="tools_size">Ukuran Tools Branding:</label>
+            <input type="text" id="tools_size" name="tools_size" placeholder="Contoh: 300x100 cm" required>
+
+            <label for="quantity">QTY Tools:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="Masukkan jumlah" required>
+
+            <label for="brand">Brand:</label>
+            <select id="brand" name="brand" required>
+                <option value="">-- Pilih Brand --</option>
+                <option value="SOREX MAN">SOREX MAN</option>
+                <option value="SOREX LADIES">SOREX LADIES</option>
+                <option value="SOREX KIDS">SOREX KIDS</option>
+            </select>
+
+            <label for="delivery">Pengiriman:</label>
+            <input type="text" id="delivery" name="delivery" placeholder="Masukkan lokasi pengiriman" required>
+
+            <label for="additional_notes">Keterangan Tambahan:</label>
+            <textarea id="additional_notes" name="additional_notes" placeholder="Masukkan keterangan tambahan..."></textarea>
+
+            <label for="installation_photo">Foto Area Pemasangan:</label>
+            <input type="file" id="installation_photo" name="installation_photo" accept="image/*" onchange="previewImage(event, 'preview_installation')">
+            <img id="preview_installation" src="" alt="Preview Foto Area Pemasangan" style="display: none; width: 200px; margin-top: 10px;">
+
+            <label for="design_photo">Foto Sugest Design:</label>
+            <input type="file" id="design_photo" name="design_photo" accept="image/*" onchange="previewImage(event, 'preview_design')">
+            <img id="preview_design" src="" alt="Preview Foto Sugest Design" style="display: none; width: 200px; margin-top: 10px;">
+
+            <button type="submit">Kirim</button>
+        </form>
+    </div>
+
+    <script>
+        function previewImage(event, previewId) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                var imgElement = document.getElementById(previewId);
+                imgElement.src = reader.result;
+                imgElement.style.display = "block";
+            }
+
+            if (input.files && input.files[0]) {
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function toggleOtherTools() {
+            const brandingTools = document.getElementById('branding_tools');
+            const otherToolsWrapper = document.getElementById('other_tools_wrapper');
+
+            if (brandingTools.value === 'Lainnya') {
+                otherToolsWrapper.style.display = 'block';
+            } else {
+                otherToolsWrapper.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

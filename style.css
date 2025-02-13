@@ -1,0 +1,191 @@
+/* Reset dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body dan background */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(45deg, #000000, #df1c1c, #635858, #e00c0c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff;
+    height: 100vh;
+}
+
+/* Efek animasi latar belakang */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Container untuk menempatkan form login di tengah */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Box login yang elegan */
+.login-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 50px 60px;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+}
+
+/* Efek hover pada login box */
+.login-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Heading dengan teks menarik */
+h2 {
+    margin-bottom: 30px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Input dan Button */
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+
+.forgot-password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Box login yang elegan */
+.forgot-password-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 50px 60px;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+}
+
+/* Efek hover pada login box */
+.forgot-paswsword-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Heading dengan teks menarik */
+h2 {
+    margin-bottom: 30px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Input dan Button */
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Efek fokus pada input */
+input:focus {
+    background-color: #fff;
+    border: 2px solid #f7a6ff;
+    box-shadow: 0 0 10px rgba(247, 166, 255, 0.7);
+}
+
+/* Button dengan efek transisi yang halus */
+button {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #ff6ec7, #f7a6ff);
+    border: none;
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1);
+}
+
+/* Efek hover pada button */
+button:hover {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Efek active pada button */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+button:active {
+    animation: bounce 0.5s ease;
+}
+
+/* Pesan error */
+.error-message {
+    display: none;
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Responsif untuk perangkat mobile */
+@media (max-width: 600px) {
+    .login-box {
+        padding: 25px;
+        width: 90%;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    button {
+        font-size: 18px;
+    }
+}

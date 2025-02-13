@@ -1,0 +1,10 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "^3.9",
+        "phpmailer/phpmailer": "^6.9",
+        "google/apiclient": "^2.18"
+    }
+}

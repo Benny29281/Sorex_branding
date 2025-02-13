@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Revisi Branding SOREX</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        input, select, textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #ff3131;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff2a2a;
+        }
+    </style>
+    <script>
+        function fetchPreviousData() {
+            var requestId = document.getElementById("request_id").value;
+            if (requestId) {
+                fetch('get_request_data.php?id=' + requestId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error); // Tampilkan error kalau ID gak ketemu
+                        return;
+                    }
+                    
+                    document.getElementById("email").value = data.email || "";
+                    document.getElementById("area_sales").value = data.area_sales || "";
+                    document.getElementById("sales_code").value = data.sales_code || "";
+                    document.getElementById("store_name").value = data.store_name || "";
+                    document.getElementById("spv_name").value = data.spv_name || "";
+                    document.getElementById("location").value = data.location || "";
+                    document.getElementById("request_type").value = data.request_type || "";
+                    document.getElementById("branding_tools").value = data.branding_tools || "";
+                    document.getElementById("tools_size").value = data.tools_size || "";
+                    document.getElementById("quantity").value = data.quantity || "";
+                    document.getElementById("brand").value = data.brand || "";
+                    document.getElementById("delivery").value = data.delivery || "";
+                    document.getElementById("additional_notes").value = data.additional_notes || "";
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+    </script>
+        
+    
+</head>
+<body>
+    <div class="container">
+        <h1>FORM REVISI BRANDING</h1>
+        <h2>SOREX (JB & JR)</h2>
+        <form action="submit_formm.php" method="post" enctype="multipart/form-data">
+            <label for="request_id">ID Request Sebelumnya:</label>
+            <input type="text" id="request_id" name="request_id" placeholder="Masukkan ID Request" required onblur="fetchPreviousData()">
+
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+
+            <label for="area_sales">Area Sales:</label>
+            <select id="area_sales" name="area_sales" required>
+                <option value="">-- Pilih Area --</option>
+                <option value="JB">JB</option>
+                <option value="JR">JR</option>
+            </select>
+
+            <label for="sales_code">Nama Sales:</label>
+            <input type="text" id="sales_code" name="sales_code" placeholder="Masukkan name sales" required>
+
+            <label for="store_name">Nama Toko:</label>
+            <input type="text" id="store_name" name="store_name" placeholder="Masukkan nama toko" required>
+
+            <label for="spv_name">Nama SPV:</label>
+            <input type="text" id="spv_name" name="spv_name" placeholder="Masukkan nama SPV" required>
+
+            <label for="location">Lokasi:</label>
+            <input type="text" id="location" name="location" placeholder="Masukkan lokasi" required>
+
+            <label for="request_type">Jenis Permintaan:</label>
+            <select id="request_type" name="request_type" required>
+                <option value="">-- Pilih Jenis Permintaan --</option>
+                <option value="BARU">Baru</option>
+                <option value="PERMAJAAN">Permajaan</option>
+            </select>
+
+            <label for="branding_tools">Jenis Tools Branding:</label>
+            <select id="branding_tools" name="branding_tools" required>
+                <option value="">-- Pilih Tools --</option>
+                <option value="other">SPANDUK KOREA</option>
+                <option value="other">SPANDUK KOREA (PAKAI MATA AYAM)</option>
+                <option value="other">SPANDUK CHINA</option>
+                <option value="other">SPANDUK CHINA (PAKAI MATA AYAM)</option>
+                <option value="other">POSTER DOFF</option>
+                <option value="other">POSTER GLOSSY</option>
+                <option value="other">STIKER DOFF</option>
+                <option value="other">STIKER GLOSSY</option>
+                <option value="other">STIKER ONEWAY</option>
+                <option value="other">STIKER BACKLITE (UNTUK NEONBOX)</option>
+                <option value="other">STIKER OVERPRINT (UNTUK NEONBOX)</option>
+                <option value="other">AKRILIK KAPUR / PVC</option>
+                <option value="other">AKRILIK BENING</option>
+                <option value="other">IMPRABOARD</option>
+                <option value="other">NEONBOX</option>
+                <option value="other">ART PAPER / POP</option>
+                <option value="other">X BANNER</option>
+                <option value="other">ROLL UP BANNER</option>
+                <option value="other">TRIPOD BANNER</option>
+                <label for="other_tools">Lainnya (Opsional):</label>
+            <textarea id="other_tools" name="other_tools" placeholder="Masukkan jenis tools lainnya..."></textarea>
+                <!-- Tambahkan opsi lainnya sesuai kebutuhan -->
+            </select>
+
+            <label for="tools_size">Ukuran Tools Branding:</label>
+            <input type="text" id="tools_size" name="tools_size" placeholder="Contoh: 300x100 cm" required>
+
+            <label for="quantity">QTY Tools:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="Masukkan jumlah" required>
+
+            <label for="brand">Brand:</label>
+            <select id="brand" name="brand" required>
+                <option value="">-- Pilih Brand --</option>
+                <option value="SOREX MAN">SOREX MAN</option>
+                <option value="SOREX LADIES">SOREX LADIES</option>
+                <option value="SOREX KIDS">SOREX KIDS</option>
+            </select>
+
+            <label for="delivery">Pengiriman:</label>
+            <input type="text" id="delivery" name="delivery" placeholder="Masukkan lokasi pengiriman" required>
+
+            <label for="additional_notes">Keterangan Tambahan:</label>
+            <textarea id="additional_notes" name="additional_notes" placeholder="Masukkan keterangan tambahan..."></textarea>
+
+            <label for="installation_photo">Foto Area Pemasangan:</label>
+            <input type="file" id="installation_photo" name="installation_photo" accept="image/*">
+
+            <label for="design_photo">Foto Sugest Design:</label>
+            <input type="file" id="design_photo" name="design_photo" accept="image/*">
+
+            <button type="submit">Kirim Revisi</button>
+        </form>
+    </div>
+</body>
+</html>

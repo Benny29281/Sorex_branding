@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel Editor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    table, th, td { border: 1px solid black; text-align: center; padding: 5px; }
+    button { margin: 5px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Excel Editor</h1>
+
+  <!-- Save button -->
+  <button id="save">Save as Excel</button>
+  
+  <!-- Table buat nampilin data -->
+  <table id="excelTable">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let workbook; // Tempat nyimpen file Excel
+    let sheetName; // Nama sheet aktif
+
+    // Load file Excel dari folder
+    fetch('gform_JB_JR.xlsx') // Ganti path sesuai folder lo
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        workbook = XLSX.read(data, { type: "array" });
+        sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        renderTable(jsonData);
+      })
+      .catch((err) => console.error("Failed to load Excel file:", err));
+
+    function renderTable(data) {
+      const tableHead = document.querySelector("#excelTable thead");
+      const tableBody = document.querySelector("#excelTable tbody");
+      tableHead.innerHTML = "";
+      tableBody.innerHTML = "";
+
+      // Generate header
+      const headerRow = document.createElement("tr");
+      data[0].forEach((header) => {
+        const th = document.createElement("th");
+        th.textContent = header || "Header";
+        headerRow.appendChild(th);
+      });
+      headerRow.appendChild(document.createElement("th")).textContent = "Actions";
+      tableHead.appendChild(headerRow);
+
+      // Generate rows
+      data.slice(1).forEach((row, rowIndex) => {
+        const tr = document.createElement("tr");
+        row.forEach((cell) => {
+          const td = document.createElement("td");
+          td.contentEditable = true;
+          td.textContent = cell || "";
+          tr.appendChild(td);
+        });
+
+        // Tambah tombol delete
+        const actionTd = document.createElement("td");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => tr.remove());
+        actionTd.appendChild(deleteBtn);
+        tr.appendChild(actionTd);
+
+        tableBody.appendChild(tr);
+      });
+
+      // Tambah baris kosong buat input baru
+      const addRow = document.createElement("tr");
+      data[0].forEach(() => {
+        const td = document.createElement("td");
+        td.contentEditable = true;
+        addRow.appendChild(td);
+      });
+
+      const actionTd = document.createElement("td");
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "Add";
+      addBtn.addEventListener("click", () => {
+        const newRow = Array.from(addRow.children).map((td) => td.textContent);
+        renderTable([...data, newRow]);
+      });
+      actionTd.appendChild(addBtn);
+      addRow.appendChild(actionTd);
+
+      tableBody.appendChild(addRow);
+    }
+
+    document.getElementById("save").addEventListener("click", () => {
+      const tableRows = Array.from(document.querySelectorAll("#excelTable tbody tr"));
+      const data = tableRows.map((row) => 
+        Array.from(row.querySelectorAll("td:not(:last-child)")).map((td) => td.textContent)
+      );
+
+      const newWorksheet = XLSX.utils.aoa_to_sheet([data[0], ...data.slice(1)]);
+      const newWorkbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, sheetName);
+      XLSX.writeFile(newWorkbook, "edited_excel.xlsx");
+    });
+  </script>
+</body>
+</html>

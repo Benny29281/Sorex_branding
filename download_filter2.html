@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter & Download Excel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 50px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Filter Data Sales</h2>
+    <form action="download_data.php" method="GET">
+        <label for="salesName">Regional:</label>
+        <select name="salesName" id="salesName">
+            <option value="">-- Pilih Regional --</option>
+            <!-- <option value="JB">JB</option>
+            <option value="JR">JR</option> -->
+            <option value="JT">JT</option>
+            <option value="DK">DK</option>
+            <option value="LP">LP</option>
+            <?php foreach ($salesList as $sales): ?>
+                <option value="<?= htmlspecialchars($sales) ?>"><?= htmlspecialchars($sales) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <br>
+
+        <label for="startDate">Tanggal Mulai:</label>
+        <input type="date" name="startDate" id="startDate">
+        <br>
+
+        <label for="endDate">Tanggal Akhir:</label>
+        <input type="date" name="endDate" id="endDate">
+        <br>
+
+        <button type="submit">Download Excel</button>
+    </form>
+
+</body>
+</html>

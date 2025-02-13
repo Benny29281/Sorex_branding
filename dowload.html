@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Data Branding</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Download Data JB & JR</h1>
+        <p class="text-center">Klik tombol di bawah untuk mengunduh data branding dalam format excel.</p>
+        <div class="text-center">
+            <a href="download_excel.php" class="btn btn-primary">Download Data Excel</a>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h1 class="text-center">Download Data JT, DK, & LP</h1>
+        <p class="text-center">Klik tombol di bawah untuk mengunduh data branding dalam format excel.</p>
+        <div class="text-center">
+            <a href="dowload_excel2.php" class="btn btn-primary">Download Data Excel</a>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk download PDF
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Judul dan teks untuk PDF
+            doc.text("Data Branding", 20, 20);
+            doc.text("Data ini dapat didownload dalam format excel.", 20, 30);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Role</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+        }
+
+        .profile-container {
+            max-width: 900px;
+            margin: 5rem auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            border-top: 5px solid #4CAF50;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #4CAF50;
+        }
+
+        .profile-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        .profile-header p {
+            font-size: 1rem;
+            color: #666;
+            margin: 0.3rem 0;
+        }
+
+        .profile-menu {
+            margin-top: 3rem;
+        }
+
+        .profile-menu h3 {
+            font-size: 1.6rem;
+            color: #4CAF50;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-menu ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .profile-menu li {
+            padding: 1rem;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: transform 0.3s, background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-menu li:hover {
+            background-color: #f1f8f1;
+            transform: translateY(-5px);
+            cursor: pointer;
+        }
+
+        .profile-menu li i {
+            font-size: 1.4rem;
+            color: #4CAF50;
+            transition: color 0.3s;
+        }
+
+        .profile-menu li:hover i {
+            color: #333;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .popup button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .profile-menu ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Header Profile -->
+        <div class="profile-header">
+            <img src="Screenshot 2025-01-16 120141.png" alt="Foto Profil">
+            <div>
+                <h1>Farhan Arief</h1>
+                <p>Role: Administrator</p>
+                <p>Email: Farhan@example.com</p>
+            </div>
+        </div>
+
+        <!-- Menu Profil -->
+        <div class="profile-menu">
+            <h3>Menu</h3>
+            <ul>
+                <li onclick="viewProfile()">
+                    <span>Lihat Profil</span>
+                    <i class="fas fa-user-circle"></i>
+                </li>
+                <li onclick="editProfile()">
+                    <span>Edit Informasi</span>
+                    <i class="fas fa-edit"></i>
+                </li>
+                <li onclick="changePassword()">
+                    <span>Ubah Password</span>
+                    <i class="fas fa-key"></i>
+                </li>
+                <li onclick="manageSettings()">
+                    <span>Kelola Pengaturan</span>
+                    <i class="fas fa-cogs"></i>
+                </li>
+                <li onclick="logout()">
+                    <span>Logout</span>
+                    <i class="fas fa-sign-out-alt"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FontAwesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- Popup Modals -->
+    <div class="popup" id="popupProfile">
+        <div class="popup-content">
+            <h2>Profil Pengguna</h2>
+            <p>Ini adalah halaman profil pengguna.</p>
+            <button onclick="closePopup('popupProfile')">Tutup</button>
+        </div>
+    </div>
+
+    <div class="popup" id="popupEdit">
+        <div class="popup-content">
+            <h2>Edit Informasi</h2>
+            <form>
+                <input type="text" placeholder="Nama" required><br><br>
+                <input type="email" placeholder="Email" required><br><br>
+                <button type="submit">Simpan</button>
+            </form>
+            <button onclick="closePopup('popupEdit')">Tutup</button>
+        </div>
+    </div>
+
+    <div class="popup" id="popupPassword">
+        <div class="popup-content">
+            <h2>Ubah Password</h2>
+            <form>
+                <input type="password" placeholder="Password Baru" required><br><br>
+                <button type="submit">Ubah Password</button>
+            </form>
+            <button onclick="closePopup('popupPassword')">Tutup</button>
+        </div>
+    </div>
+
+    <div class="popup" id="popupSettings">
+        <div class="popup-content">
+            <h2>Kelola Pengaturan</h2>
+            <p>Halaman pengaturan sistem.</p>
+            <button onclick="closePopup('popupSettings')">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        function viewProfile() {
+            document.getElementById('popupProfile').style.display = 'flex';
+        }
+
+        function editProfile() {
+            document.getElementById('popupEdit').style.display = 'flex';
+        }
+
+        function changePassword() {
+            document.getElementById('popupPassword').style.display = 'flex';
+        }
+
+        function manageSettings() {
+            document.getElementById('popupSettings').style.display = 'flex';
+        }
+
+        function logout() {
+            alert('Anda telah logout.');
+            // Implementasi logout sesuai dengan kebutuhan sistem, misalnya redirect ke halaman login
+            window.location.href = 'index.html';
+        }
+
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

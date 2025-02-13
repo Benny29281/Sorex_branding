@@ -1,0 +1,102 @@
+<div class="log-container">
+    <h3>Aktivitas Terbaru</h3>
+    <table id="log-table">
+        <thead>
+        </thead>
+        <tbody id="log-list">
+            <!-- Isi log akan dimasukkan di sini -->
+        </tbody>
+    </table>
+    <!-- Tombol keluar -->
+    <button id="exit-button">Keluar</button>
+</div>
+
+<style>
+    h3 {
+        text-align: center;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+
+    #log-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #exit-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #exit-button:hover {
+        background-color: #e64a19;
+    }
+</style>
+
+<script>
+    fetch('activity_log2.txt')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Log data:", data); // Cek di console browser
+        const logList = document.getElementById('log-list');
+        const logs = data.split('\n');
+
+        logs.forEach(log => {
+            if (log.trim()) {
+                // Misalnya log dipisah koma
+                const logColumns = log.split(',');
+
+                // Create row
+                const row = document.createElement('tr');
+
+                // Loop through each column dan tambahkan ke row
+                logColumns.forEach(column => {
+                    const td = document.createElement('td');
+                    td.textContent = column.trim();
+                    row.appendChild(td);
+                });
+
+                // Append row ke awal dari table body
+                logList.prepend(row); // Ganti appendChild ke prepend
+            }
+        });
+    })
+    .catch(error => {
+        console.error("Error loading log file:", error);
+    });
+
+// Event listener untuk tombol keluar
+document.getElementById('exit-button').addEventListener('click', function() {
+    // Ganti URL ini dengan tujuan keluar lo, misalnya ke halaman login
+    window.location.href = 'user2.html';  // Contoh: ngarahin ke halaman luar
+});
+
+</script>

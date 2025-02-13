@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Sistem</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            display: flex;
+        }
+        /* Sidebar Style */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: block;
+            border-radius: 5px;
+        }
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+        }
+        /* Main Content Style */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+        .header {
+            background-color: #2980b9;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        /* Card Style for Menu Sections */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 30%;
+            padding: 20px;
+            text-align: center;
+        }
+        .card h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .card p {
+            color: #777;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        form input, form select, form textarea, form button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .card button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .card button:hover {
+            background-color: #3498db;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        form button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #3498db;}
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card {
+                width: 45%;
+            }
+        }
+        @media (max-width: 480px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <h1>Kelola Sistem</h1>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Kelola Pengguna</a></li>
+            <li><a href="#">Kelola Konten</a></li>
+            <li><a href="#">Pengaturan Sistem</a></li>
+            <li><a href="#">Statistik</a></li>
+            <li><a href="#">Keluar</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Menu Kelola Sistem</h2>
+        </div>
+
+        <!-- Menu Sections -->
+        <div class="card-container">
+            <div class="card">
+                <h3>Kelola Pengguna</h3>
+                <p>Tambah, ubah, dan hapus pengguna sistem Anda.</p>
+                <button onclick="toggleForm('formKelolaPengguna')">Kelola Pengguna</button>
+                <div id="formKelolaPengguna" style="display: none;">
+                    <h4>Tambah Pengguna</h4>
+                    <form onsubmit="addUser(event)">
+                        <input type="text" id="username" placeholder="Username" required>
+                        <input type="email" id="email" placeholder="Email" required>
+                        <input type="password" id="password" placeholder="Password" required>
+                        <select id="role" required>
+                            <option value="">Pilih Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            <option value="administrator">Administrator</option>
+                        </select>
+                        <button type="submit">Tambah Pengguna</button>
+                    </form>
+                    <h4>Daftar Pengguna</h4>
+                    <ul id="userList"></ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Kelola Konten</h3>
+                <p>Kelola dan update konten yang ada di website.</p>
+                <button onclick="toggleForm('formKelolaKonten')">Kelola Konten</button>
+                <div id="formKelolaKonten" style="display: none;">
+                    <h4>Tambah Konten</h4>
+                    <form onsubmit="addContent(event)">
+                        <input type="text" id="kontenJudul" placeholder="Judul Konten" required>
+                        <textarea id="kontenDeskripsi" placeholder="Deskripsi Konten" required></textarea>
+                        <button type="submit">Tambah Konten</button>
+                    </form>
+                    <h4>Daftar Konten</h4>
+                    <ul id="kontenList"></ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Pengaturan Sistem</h3>
+                <p>Atur pengaturan sistem untuk performa maksimal.</p>
+                <button onclick="alert('Pengaturan sistem telah diubah')">Pengaturan Sistem</button>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <h3>Statistik</h3>
+                <p>Lihat statistik penggunaan dan aktivitas sistem.</p>
+                <button onclick="alert('Menampilkan statistik')">Lihat Statistik</button>
+            </div>
+
+            <div class="card">
+                <h3>Backup & Restore</h3>
+                <p>Backup data atau restore sistem ke kondisi sebelumnya.</p>
+                <button onclick="alert('Backup data berhasil!')">Backup Data</button>
+                <button onclick="alert('Restore data berhasil!')">Restore Data</button>
+            </div>
+
+            <div class="card">
+                <h3>Keluar</h3>
+                <p>Logout dari sistem Anda.</p>
+                <button onclick="location.href='admin.html'">Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk menampilkan form
+        function toggleForm(id) {
+            const form = document.getElementById(id);
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+        // Fungsi untuk menambah pengguna
+        function addUser(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            const userList = document.getElementById('userList');
+            const userItem = document.createElement('li');
+            userItem.textContent = `${username} (${role}) - ${email}`;
+            userList.appendChild(userItem);
+
+            // Reset form
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('role').value = '';
+        }
+
+        // Fungsi untuk menambah konten
+        function addContent(event) {
+            event.preventDefault();
+            const judul = document.getElementById('kontenJudul').value;
+            const deskripsi = document.getElementById('kontenDeskripsi').value;
+
+            const kontenList = document.getElementById('kontenList');
+            const kontenItem = document.createElement('li');
+            kontenItem.textContent = `${judul}: ${deskripsi}`;
+            kontenList.appendChild(kontenItem);
+
+            // Reset form
+            document.getElementById('kontenJudul').value = '';
+            document.getElementById('kontenDeskripsi').value = '';
+        }
+    </script>
+</body>
+</html>

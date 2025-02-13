@@ -1,0 +1,27 @@
+<div>
+    <h3>Download Data Sales</h3>
+    <form id="filterForm">
+        <label for="startDate">Tanggal Mulai:</label>
+        <input type="date" id="startDate" name="startDate" />
+
+        <label for="endDate">Tanggal Akhir:</label>
+        <input type="date" id="endDate" name="endDate" />
+
+        <label for="salesName">Nama Sales:</label>
+        <input type="text" id="salesName" name="salesName" placeholder="Nama Sales" />
+
+        <button type="button" id="downloadBtn">Download</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const salesName = document.getElementById('salesName').value;
+
+        // Redirect ke endpoint download Excel
+        const query = new URLSearchParams({ startDate, endDate, salesName });
+        window.location.href = `/download-excel?${query.toString()}`;
+    });
+</script>

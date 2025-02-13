@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorex Branding</title>
+    <link rel="icon" href="SOREX3.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #e01432;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: #e01432 !important;
+            color: white !important;
+            border-radius: 5px;
+        }
+
+        .hero-image {
+            background: linear-gradient(to right, #faefef, #ffffff);
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 50px 0;
+        }
+
+        .hero-image h1 {
+            color: #e01432;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .hero-image h5 {
+            color: #361f1f;
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        .hero-image div {
+            margin-bottom: 50px; /* Tambahin jarak antar div */
+        }
+
+        .footer {
+            background-color: #e01432;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .btn-custom {
+            background-color: #e01432;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #e01432;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-red {
+            background-color: #e01432;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-red:hover {
+            background-color: #e01432;
+        }
+
+        .log-container {
+            margin-top: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="SOREX4.png" alt="SOREX4 Logo" width="80" height="50" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="user.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="log.html">Log Aktivitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="download_filter.html">Download Data</a>
+                    </li>
+                    <!-- <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           Revisi Data
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="revisi.php">JB & JR</a></li>
+                            <li><a class="dropdown-item" href="revisi2.php">JT, DK & LP</a></li>
+                        </ul>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-image">
+        <div>
+            <h1>Input Data</h1>
+            <!-- <h5>Input data berdasarkan Region</h5> -->
+            <div class="button-container">
+                <a href="input1.html" class="btn btn-custom">JB & JR</a>
+                <!-- <a href="input.html" class="btn btn-custom">JT, DK & LP</a> -->
+            </div>
+
+            <h1>Revisi Data</h1>
+            <!-- <h5>Revisi data berdasarkan Region</h5> -->
+            <div class="button-container">
+                <a href="revisi.php" class="btn btn-custom">JB & JR</a>
+                <!-- <a href="revisi2.php" class="btn btn-custom">JT, DK & LP</a> -->
+            </div>
+
+            <h1>Tracking</h1>
+            <h5>Masukkan Request Code,Nama Toko,Nama Sales</h5>
+                <!-- <div class="button-container">
+                    <a href="input1.html" class="btn btn-custom">JB & JR</a>
+                    <a href="input.html" class="btn btn-custom">JT, DK & LP</a>
+                </div> -->
+
+            <!-- Search Bar -->
+            <form action="search.php" method="post" class="mt-3" style="max-width: 500px; margin: auto;">
+                <div class="mb-2">
+                    <input type="text" class="form-control" name="search" placeholder="Request code" required>
+                </div>
+                <button type="submit" class="btn btn-red w-100">Cari</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2025 SOREX. All Rights Reserved.</p>
+    </div>
+
+</body>
+</html>
