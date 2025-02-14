@@ -28,15 +28,15 @@
     let sheetName; // Nama sheet aktif
 
     // Load file Excel dari folder server
-    fetch('load_excel.php') // PHP script buat load Excel dari server
+    fetch('load_excel2.php') // PHP script buat load Excel dari server
       .then((response) => response.json())
       .then((data) => {
         workbook = XLSX.read(data.file, { type: "base64" });
         sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-          raw: false, // Ini penting buat parsing tanggal
+            header: 1,
+            raw: false, // Ini penting buat parsing tanggal
         });
 
         renderTable(jsonData);
@@ -115,7 +115,7 @@
       const excelData = XLSX.write(newWorkbook, { bookType: "xlsx", type: "base64" });
 
       // Kirim data ke server buat disimpan
-      fetch('save_excel.php', {
+      fetch('save_excel2.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
