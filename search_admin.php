@@ -77,5 +77,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "<h1>Tidak ada data yang cocok!</h1>";
     }
+    echo "<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    td {
+        text-align: center;
+        padding: 8px;
+        background-color: #f8f8f8;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #e9f7e9; /* Warna hijau muda */
+    }
+
+    tr:nth-child(odd) td {
+        background-color: #ffffff; /* Warna putih */
+    }
+
+    .highlight {
+        background-color: #ffd700; /* Warna kuning buat highlight */
+        font-weight: bold;
+    }
+</style>";
+
 }
 ?>

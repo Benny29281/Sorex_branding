@@ -118,15 +118,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                "Reply-To: support@gmail.com" . "\r\n" .
                "Content-Type: text/plain; charset=UTF-8";
 
-    if (mail($to, $subject, $message, $headers)) {
-        echo "<script>
-            alert('Request code kamu adalah ID: $newId Email sudah dikirim.');
-            window.location.href = 'user.html';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Gagal mengirim email, coba lagi!');
-            window.location.href = 'user.html';
-        </script>";
-    }
+               if (mail($to, $subject, $message, $headers)) {
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var id = '" . $newId . "';
+                        var alertDiv = document.createElement('div');
+                        alertDiv.style.position = 'fixed';
+                        alertDiv.style.top = '50%';
+                        alertDiv.style.left = '50%';
+                        alertDiv.style.transform = 'translate(-50%, -50%)';
+                        alertDiv.style.backgroundColor = '#fff';
+                        alertDiv.style.border = '1px solid #ddd';
+                        alertDiv.style.padding = '20px';
+                        alertDiv.style.borderRadius = '8px';
+                        alertDiv.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                        alertDiv.style.textAlign = 'center';
+                        alertDiv.style.zIndex = '1000';
+                        alertDiv.style.fontFamily = 'Arial, sans-serif';
+            
+                        alertDiv.innerHTML = `
+                            <p style='margin-bottom: 15px; font-size: 16px;'>Request ID kamu adalah:</p>
+                            <strong style='font-size: 20px; color: #007BFF;'>" . $newId . "</strong>
+                            <div style='margin-top: 15px;'>
+                                <button id='copyButton' style='background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;'>Copy ID</button>
+                                <button id='closeButton' style='background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;'>Close</button>
+                            </div>
+                        `;
+                        document.body.appendChild(alertDiv);
+            
+                        // Copy to clipboard
+                        document.getElementById('copyButton').addEventListener('click', function() {
+                            navigator.clipboard.writeText(id).then(function() {
+                                alert('ID berhasil disalin ke clipboard!');
+                            }).catch(function(err) {
+                                alert('Gagal menyalin ID!');
+                            });
+                        });
+            
+                        // Close alert
+                        document.getElementById('closeButton').addEventListener('click', function() {
+                            alertDiv.remove();
+                            window.location.href = 'user2.html';
+                        });
+                    });
+                </script>";
+            } else {
+                echo "<script>
+                    alert('Gagal mengirim email, coba lagi!');
+                    window.location.href = 'user2.html';
+                </script>";
+            }
+            
 }

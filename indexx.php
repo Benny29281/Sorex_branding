@@ -59,42 +59,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Data Excel</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .edit-link {
-            color: white;
-            background-color: #28a745;
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .edit-link:hover {
-            background-color: #218838;
-        }
-        .edit-form {
-            margin-top: 20px;
-        }
-    </style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4; /* Warna background halaman */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow tabel */
+    background-color: #fff; /* Background tabel putih */
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50; /* Hijau cerah */
+    color: white;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) td {
+    background-color: #f9f9f9; /* Abu-abu muda */
+}
+
+tr:nth-child(odd) td {
+    background-color: #ffffff; /* Putih */
+}
+
+td.highlight {
+    background-color: #b4e197; /* Hijau muda untuk kolom yang di-highlight */
+    font-weight: bold;
+}
+
+.edit-link {
+    color: white;
+    background-color: #28a745; /* Hijau untuk tombol */
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.edit-link:hover {
+    background-color: #218838; /* Hijau lebih gelap saat hover */
+}
+
+.edit-form {
+    margin-top: 20px;
+    background-color: #fff; /* Putih untuk form */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-form h2 {
+    color: #333;
+    text-align: center;
+}
+
+.edit-form div {
+    margin-bottom: 15px;
+}
+
+.edit-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.edit-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.edit-form button {
+    background-color: #4CAF50; /* Hijau cerah */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-form button:hover {
+    background-color: #45a049; /* Hijau lebih gelap */
+}
+
+</style>
+
 </head>
 <body>
 
@@ -115,18 +187,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </tr>
     </thead>
     <tbody>
-        <?php
-        // Menampilkan baris data Excel
-        foreach ($data as $rowIndex => $row) {
-            echo "<tr>";
-            foreach ($row as $colIndex => $cell) {
-                echo "<td>{$cell}</td>";
-            }
-            echo "<td><a href='?edit={$rowIndex}' class='edit-link'>Edit</a></td>";
-            echo "</tr>";
+    <?php
+    foreach ($data as $rowIndex => $row) {
+        echo "<tr>";
+        foreach ($row as $colIndex => $cell) {
+            $class = ($colIndex == 1) ? 'highlight' : ''; // Highlight kolom kedua (ubah sesuai kebutuhan)
+            echo "<td class='{$class}'>{$cell}</td>";
         }
-        ?>
-    </tbody>
+        echo "<td><a href='?edit={$rowIndex}' class='edit-link'>Edit</a></td>";
+        echo "</tr>";
+    }
+    ?>
+</tbody>
+
 </table>
 
 <!-- Form untuk mengedit data -->

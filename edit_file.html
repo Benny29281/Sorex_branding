@@ -6,10 +6,86 @@
   <title>Excel Editor</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    table, th, td { border: 1px solid black; text-align: center; padding: 5px; }
-    button { margin: 5px; padding: 10px; }
-  </style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4; /* Warna background halaman */
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow tabel */
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4CAF50; /* Hijau cerah untuk header */
+        color: white;
+        text-transform: uppercase;
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #f9f9f9; /* Abu-abu muda untuk baris genap */
+    }
+
+    tr:nth-child(odd) td {
+        background-color: #ffffff; /* Putih untuk baris ganjil */
+    }
+
+    td[contenteditable="true"] {
+        background-color: #fffbe6; /* Kuning muda untuk kolom editable */
+        border: 1px solid #ffc107; /* Outline kuning */
+    }
+
+    button {
+        background-color: #28a745; /* Hijau cerah untuk tombol */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #218838; /* Hijau lebih gelap saat hover */
+    }
+
+    button:disabled {
+        background-color: #cccccc; /* Warna disable */
+        cursor: not-allowed;
+    }
+
+    td button {
+        margin: 5px 0;
+    }
+
+    td:last-child {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
 </head>
 <body>
   <h1>Excel Editor</h1>
@@ -19,7 +95,8 @@
   
   <!-- Table buat nampilin data -->
   <table id="excelTable">
-    <thead></thead>
+    <thead>
+    </thead>
     <tbody></tbody>
   </table>
 
@@ -60,7 +137,7 @@
       tableHead.appendChild(headerRow);
 
       // Generate rows
-      data.slice(1).forEach((row, rowIndex) => {
+      data.slice(1).forEach((row) => {
         const tr = document.createElement("tr");
         row.forEach((cell) => {
           const td = document.createElement("td");
@@ -71,12 +148,30 @@
 
         // Tambah tombol delete
         const actionTd = document.createElement("td");
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => tr.remove());
-        actionTd.appendChild(deleteBtn);
-        tr.appendChild(actionTd);
 
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete coloumn";
+        deleteBtn.addEventListener("click", () => {
+          const confirmDelete = confirm("Apakah anda ingin menghapus column?");
+          if (confirmDelete) tr.remove();
+        });
+        actionTd.appendChild(deleteBtn);
+
+        // Tambah tombol add column
+        const addColBtn = document.createElement("button");
+        addColBtn.textContent = "Add Column";
+        addColBtn.addEventListener("click", () => {
+          // Tambah kolom baru ke setiap baris
+          document.querySelectorAll("#excelTable tr").forEach((row) => {
+            const newCell = document.createElement("td");
+            newCell.contentEditable = true;
+            newCell.textContent = "";
+            row.insertBefore(newCell, row.lastElementChild);
+          });
+        });
+        actionTd.appendChild(addColBtn);
+
+        tr.appendChild(actionTd);
         tableBody.appendChild(tr);
       });
 
@@ -90,7 +185,7 @@
 
       const actionTd = document.createElement("td");
       const addBtn = document.createElement("button");
-      addBtn.textContent = "Add";
+      addBtn.textContent = "Add New Row";
       addBtn.addEventListener("click", () => {
         const newRow = Array.from(addRow.children).map((td) => td.textContent);
         renderTable([...data, newRow]);
