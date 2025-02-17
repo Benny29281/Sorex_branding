@@ -6,7 +6,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lastIdFile = 'last_id.txt';
-    $lastId = 600;  // Default ID mulai dari 600
+    $lastId = 530;  // Default ID mulai dari 600
     $prefix = 'RB';
 
     if (file_exists($lastIdFile)) {
@@ -158,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close alert
             document.getElementById('closeButton').addEventListener('click', function() {
                 alertDiv.remove();
-                window.location.href = 'user2.html';
+                window.location.href = 'user.html';
             });
         });
     </script>";

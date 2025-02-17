@@ -5,8 +5,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $lastIdFile = 'last_id.txt';
-    $lastId = 600;  // Default ID mulai dari 600
+    $lastIdFile = 'last_id2.txt';
+    $lastId = 649;  // Default ID mulai dari 600
     $prefix = 'BS';
 
     if (file_exists($lastIdFile)) {

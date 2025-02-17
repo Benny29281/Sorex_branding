@@ -102,6 +102,14 @@ tr:nth-child(odd) td {
     background-color: #ffffff; /* Putih */
 }
 
+td {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
 td.highlight {
     background-color: #b4e197; /* Hijau muda untuk kolom yang di-highlight */
     font-weight: bold;
@@ -183,7 +191,6 @@ td.highlight {
                 echo "<th>{$header}</th>";
             }
             ?>
-            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
@@ -194,37 +201,13 @@ td.highlight {
             $class = ($colIndex == 1) ? 'highlight' : ''; // Highlight kolom kedua (ubah sesuai kebutuhan)
             echo "<td class='{$class}'>{$cell}</td>";
         }
-        echo "<td><a href='?edit={$rowIndex}' class='edit-link'>Edit</a></td>";
-        echo "</tr>";
+        // echo "<td><a href='?edit={$rowIndex}' class='edit-link'>Edit</a></td>";
+        // echo "</tr>";
     }
     ?>
 </tbody>
 
 </table>
-
-<!-- Form untuk mengedit data -->
-<?php
-if (isset($_GET['edit'])) {
-    $rowIndex = intval($_GET['edit']);
-    $editRow = $data[$rowIndex];
-    ?>
-    <div class="edit-form">
-        <h2>Edit Data Baris <?= $rowIndex + 1 ?></h2>
-        <form method="POST">
-            <input type="hidden" name="row_index" value="<?= $rowIndex ?>">
-            <?php foreach ($editRow as $colIndex => $value): ?>
-                <div>
-                    <label>Kolom <?= $colIndex + 1 ?> (<?= htmlspecialchars($headers[$colIndex]) ?>):</label>
-                    <input type="text" name="new_value" value="<?= htmlspecialchars($value) ?>" required>
-                    <input type="hidden" name="col_index" value="<?= $colIndex ?>">
-                    <button type="submit">Simpan Kolom <?= $colIndex + 1 ?></button>
-                </div>
-            <?php endforeach; ?>
-        </form>
-    </div>
-    <?php
-}
-?>
 
 </body>
 </html>
