@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorex Branding</title>
-    <link rel="icon" href="SOREX3.png" type="image/png">
+    <link rel="icon" href="bar2.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        body {
-            background-color: #f4f6f9;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
+         body {
+    background: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 50%),
+        url('bg2.jpg') left center no-repeat,
+        url('bar2.png') right center no-repeat;
+    background-size: 50% 100%, 50% 100%, 50% 100%;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
 
         .navbar {
             background-color: #e01432;
@@ -40,16 +44,16 @@
         }
 
         .hero-image {
-            background: linear-gradient(to right, #faefef, #ffffff);
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 50px 0;
-        }
+        background: rgba(255, 255, 255, 0.8); /* Biar tulisan tetap kebaca, kasih efek transparan */
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 50px 0;
+        border-radius: 10px;
+    }
 
         .hero-image h1 {
             color: #e01432;
@@ -100,6 +104,20 @@
             margin-top: 10px;
         }
 
+        .button-container a {
+        background: rgba(224, 20, 50, 0.9); /* Biar button tetap pop-up di atas background */
+        color: white;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        padding: 10px 30px;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .button-container a:hover {
+        background: rgba(224, 20, 50, 1);
+    }
+
         .btn-red {
             background-color: #e01432;
             color: white;
@@ -126,13 +144,28 @@
             margin-bottom: 10px;
         }
 
+        .footer {
+        background-color: rgba(224, 20, 50, 0.9); /* Footer juga dikasih efek semi transparan */
+        color: white;
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+    }
+
+    @media screen and (max-width: 500px) {
+    body {
+        background: url('bg2.jpg') center center no-repeat;
+        background-size: cover;
+    }
+}
+
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="SOREX4.png" alt="SOREX4 Logo" width="100" height="50" class="d-inline-block align-text-top">
+                <img src="logo.png" alt="SOREX4 Logo" width="100" height="50" class="d-inline-block align-text-top">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
