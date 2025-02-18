@@ -84,30 +84,32 @@
         justify-content: center;
         gap: 10px;
     }
-</style>
-
+  </style>
 </head>
 <body>
   <h1>Excel Editor</h1>
+  <label for="filterDate">Filter by Date:</label>
+  <input type="date" id="filterDate" title="Select date to filter data"> 
+  <button onclick="filterByDate()">Filter by Date</button>
 
-  <!-- Save button -->
+  <!-- Input pencarian dan tombol -->
   <input type="text" id="search" placeholder="Search data...">
   <button id="resetBtn">Open All Data</button>
   <button id="save">Save to Server</button>
   
-  <!-- Table buat nampilin data -->
+  <!-- Tabel untuk menampilkan data -->
   <table id="excelTable">
-    <thead>
-    </thead>
+    <thead></thead>
     <tbody></tbody>
   </table>
 
   <script>
-    let workbook; // Tempat nyimpen file Excel
+    let workbook; // Tempat menyimpan file Excel
     let sheetName; // Nama sheet aktif
+    let originalData; // Menyimpan data asli untuk reset
 
     // Load file Excel dari folder server
-    fetch('load_excel.php') // PHP script buat load Excel dari server
+    fetch('load_excel.php') // PHP script untuk load Excel dari server
       .then((response) => response.json())
       .then((data) => {
         workbook = XLSX.read(data.file, { type: "base64" });
@@ -115,9 +117,10 @@
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, {
           header: 1,
-          raw: false, // Ini penting buat parsing tanggal
+          raw: false, // Ini penting untuk parsing tanggal
         });
 
+        originalData = jsonData; // Simpan data asli
         renderTable(jsonData);
       })
       .catch((err) => console.error("Failed to load Excel file:", err));
@@ -152,7 +155,7 @@
         const actionTd = document.createElement("td");
 
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete coloumn";
+        deleteBtn.textContent = "Delete Column";
         deleteBtn.addEventListener("click", () => {
           const confirmDelete = confirm("Apakah anda ingin menghapus column?");
           if (confirmDelete) tr.remove();
@@ -177,7 +180,7 @@
         tableBody.appendChild(tr);
       });
 
-      // Tambah baris kosong buat input baru
+      // Tambah baris kosong untuk input baru
       const addRow = document.createElement("tr");
       data[0].forEach(() => {
         const td = document.createElement("td");
@@ -198,6 +201,43 @@
       tableBody.appendChild(addRow);
     }
 
+    // Fungsi pencarian
+    document.getElementById("search").addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      const filteredData = originalData.filter((row) =>
+        row.some((cell) => cell.toLowerCase().includes(searchTerm))
+      );
+      renderTable([originalData[0], ...filteredData.slice(1)]);
+    });
+
+    // Fungsi reset (Open All Data)
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      renderTable(originalData);
+      document.getElementById("search").value = ""; // Reset input pencarian
+      document.getElementById("filterDate").value = ""; // Reset input tanggal
+    });
+
+    // Fungsi filter berdasarkan tanggal
+    function filterByDate() {
+      const selectedDate = document.getElementById("filterDate").value;
+      if (!selectedDate) {
+        alert("Silakan pilih tanggal terlebih dahulu!");
+        return;
+      }
+
+      // Cari indeks kolom yang berisi tanggal (misalnya kolom pertama adalah tanggal)
+      const dateColumnIndex = 1; // Ganti dengan indeks kolom yang sesuai
+
+      const filteredData = originalData.filter((row, index) => {
+        if (index === 0) return true; // Pertahankan header
+        const rowDate = row[dateColumnIndex]; // Ambil nilai tanggal dari kolom yang sesuai
+        return rowDate === selectedDate; // Bandingkan dengan tanggal yang dipilih
+      });
+
+      renderTable(filteredData);
+    }
+
+    // Fungsi save (tetap sama seperti sebelumnya)
     document.getElementById("save").addEventListener("click", () => {
       const tableRows = Array.from(document.querySelectorAll("#excelTable tbody tr"));
       const data = tableRows.map((row) => 
@@ -211,7 +251,7 @@
       // Konversi workbook ke Base64 string
       const excelData = XLSX.write(newWorkbook, { bookType: "xlsx", type: "base64" });
 
-      // Kirim data ke server buat disimpan
+      // Kirim data ke server untuk disimpan
       fetch('save_excel.php', {
         method: 'POST',
         headers: {
