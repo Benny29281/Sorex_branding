@@ -3,26 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filter & Download Excel</title>
+    <title>Sorex Branding</title>
+    <link rel="icon" href="bar2.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 50px;
+            background: url('bg4.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Biar form tetap tengah */
+            align-items: center;
             text-align: center;
+            padding-top: 70px; /* Tambahin padding biar konten nggak ketutupan navbar */
         }
-        h2 {
+
+    h2 {
             color: #333;
+            position: absolute;
+            margin-bottom: 400px;
         }
+
         form {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
             text-align: left;
+            width: 300px;
         }
-        label {
+
+        .navbar {
+    background-color: #e01432;
+    font-size: 1.1rem;
+    position: fixed; /* Biar selalu di atas */
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Biar nggak ketiban elemen lain */
+}
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: #e01432 !important;
+            color: white !important;
+            border-radius: 5px;
+        }
+
+        
+label {
             font-weight: bold;
         }
         input, select {
@@ -34,7 +77,7 @@
             font-size: 14px;
         }
         button {
-            background: #007bff;
+            background: #e01432;
             color: #fff;
             border: none;
             padding: 10px 15px;
@@ -43,11 +86,47 @@
             font-size: 16px;
         }
         button:hover {
-            background: #0056b3;
+            background: #e01432;
         }
+
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="user.html">
+                <img src="logo.png" alt="SOREX4 Logo" width="100" height="50" padding="14px" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link active" href="user.html">Home</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="log.html">Log Aktivitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="download_filter.html">Download Data</a>
+                    </li>
+                    <!-- <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           Revisi Data
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="revisi.php">JB & JR</a></li>
+                            <li><a class="dropdown-item" href="revisi2.php">JT, DK & LP</a></li>
+                        </ul>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <h2>Filter Data Sales</h2>
     <form action="download_data.php" method="GET">
@@ -56,12 +135,6 @@
             <option value="">-- Pilih Regional --</option>
             <option value="JB">JB</option>
             <option value="JR">JR</option>
-            <!-- <option value="JT">JT</option>
-            <option value="DK">DK</option>
-            <option value="LP">LP</option> -->
-            <?php foreach ($salesList as $sales): ?>
-                <option value="<?= htmlspecialchars($sales) ?>"><?= htmlspecialchars($sales) ?></option>
-            <?php endforeach; ?>
         </select>
         <br>
 
