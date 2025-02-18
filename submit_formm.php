@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "<script>
         alert('Gagal mengirim email, coba lagi!');
-        window.location.href = 'user2.html';
+        window.location.href = 'user.html';
     </script>";
 }
 
