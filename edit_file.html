@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Excel Editor</title>
+  <link rel="icon" href="bar2.png" type="image/png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
@@ -89,13 +90,14 @@
 <body>
   <h1>Excel Editor</h1>
   <label for="filterDate">Filter by Date:</label>
-  <input type="date" id="filterDate" title="Select date to filter data"> 
-  <button onclick="filterByDate()">Filter by Date</button>
+  <input type="date" id="filterDate">
+  <button onclick="filterByDate()">Filter</button>
+
 
   <!-- Input pencarian dan tombol -->
-  <input type="text" id="search" placeholder="Search data...">
   <button id="resetBtn">Open All Data</button>
   <button id="save">Save to Server</button>
+  <input type="text" id="search" placeholder="Search data...">
   
   <!-- Tabel untuk menampilkan data -->
   <table id="excelTable">
@@ -218,6 +220,7 @@
     });
 
     // Fungsi filter berdasarkan tanggal
+    // Fungsi filter berdasarkan tanggal dalam format MM-DD-YYYY
     function filterByDate() {
       const selectedDate = document.getElementById("filterDate").value;
       if (!selectedDate) {
@@ -225,26 +228,49 @@
         return;
       }
 
-      // Cari indeks kolom yang berisi tanggal (misalnya kolom pertama adalah tanggal)
-      const dateColumnIndex = 1; // Ganti dengan indeks kolom yang sesuai
+      // Ubah format tanggal dari input menjadi MM-DD-YYYY
+      const formattedSelectedDate = formatDateToMMDDYYYY(selectedDate);
 
+      // Cari indeks kolom yang berisi tanggal (misalnya kolom pertama adalah tanggal)
+      const dateColumnIndex = 0; // Sesuaikan dengan indeks kolom tanggal
+
+      // Filter data berdasarkan tanggal yang dipilih
       const filteredData = originalData.filter((row, index) => {
         if (index === 0) return true; // Pertahankan header
-        const rowDate = row[dateColumnIndex]; // Ambil nilai tanggal dari kolom yang sesuai
-        return rowDate === selectedDate; // Bandingkan dengan tanggal yang dipilih
+        const rowDate = formatDateToMMDDYYYY(row[dateColumnIndex]); // Ubah ke format MM-DD-YYYY
+        return rowDate === formattedSelectedDate; // Bandingkan dengan tanggal yang dipilih
       });
 
+      // Render tabel dengan data yang sudah difilter
       renderTable(filteredData);
     }
 
-    // Fungsi save (tetap sama seperti sebelumnya)
-    document.getElementById("save").addEventListener("click", () => {
-      const tableRows = Array.from(document.querySelectorAll("#excelTable tbody tr"));
-      const data = tableRows.map((row) => 
-        Array.from(row.querySelectorAll("td:not(:last-child)")).map((td) => td.textContent)
-      );
+    // Fungsi untuk mengonversi tanggal ke format MM-DD-YYYY
+    function formatDateToMMDDYYYY(dateString) {
+      const date = new Date(dateString);
+      if (isNaN(date)) return ""; // Handle invalid date
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${month}-${day}-${year}`;
+    }
 
-      const newWorksheet = XLSX.utils.aoa_to_sheet([data[0], ...data.slice(1)]);
+
+    document.getElementById("save").addEventListener("click", () => {
+      // Ambil semua baris dari tabel, termasuk header
+      const tableRows = Array.from(document.querySelectorAll("#excelTable tr"));
+      
+      // Konversi setiap baris menjadi array data
+      const data = tableRows.map((row) => {
+        // Ambil semua sel kecuali kolom "Actions"
+        const cells = Array.from(row.querySelectorAll("td:not(:last-child), th"));
+        return cells.map((cell) => cell.textContent);
+      });
+
+      // Buat worksheet baru dari data yang diambil
+      const newWorksheet = XLSX.utils.aoa_to_sheet(data);
+      
+      // Buat workbook baru dan tambahkan worksheet ke dalamnya
       const newWorkbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, sheetName);
 

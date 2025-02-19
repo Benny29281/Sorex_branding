@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Data Excel</title>
+    <link rel="icon" href="bar2.png" type="image/png">
     <style>
     body {
     font-family: Arial, sans-serif;

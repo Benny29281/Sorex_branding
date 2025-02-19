@@ -64,6 +64,7 @@ if (isset($_POST['request_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Revisi Data</title>
+    <link rel="icon" href="bar2.png" type="image/png">
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; }
         .container { max-width: 600px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
