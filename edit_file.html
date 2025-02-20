@@ -67,12 +67,12 @@
         transition: background-color 0.3s;
     }
 
-    button:hover {
-        background-color: #218838; /* Hijau lebih gelap saat hover */
+        button:hover {
+        background-color: #388E3C;
     }
 
     button:disabled {
-        background-color: #cccccc; /* Warna disable */
+        background-color: #cccccc;
         cursor: not-allowed;
     }
 
@@ -122,8 +122,11 @@
           raw: false, // Ini penting untuk parsing tanggal
         });
 
+        // Urutkan data berdasarkan kolom pertama (misalnya ID atau tanggal)
+        jsonData.sort((a, b) => a[0] - b[0]);
+
         originalData = jsonData; // Simpan data asli
-        renderTable(jsonData);
+        renderTable([jsonData[0]]); // Hanya menampilkan header saat pertama kali
       })
       .catch((err) => console.error("Failed to load Excel file:", err));
 
@@ -220,7 +223,6 @@
     });
 
     // Fungsi filter berdasarkan tanggal
-    // Fungsi filter berdasarkan tanggal dalam format MM-DD-YYYY
     function filterByDate() {
       const selectedDate = document.getElementById("filterDate").value;
       if (!selectedDate) {
@@ -255,20 +257,25 @@
       return `${month}-${day}-${year}`;
     }
 
-
     document.getElementById("save").addEventListener("click", () => {
       // Ambil semua baris dari tabel, termasuk header
       const tableRows = Array.from(document.querySelectorAll("#excelTable tr"));
       
       // Konversi setiap baris menjadi array data
-      const data = tableRows.map((row) => {
+      const newData = tableRows.map((row) => {
         // Ambil semua sel kecuali kolom "Actions"
         const cells = Array.from(row.querySelectorAll("td:not(:last-child), th"));
         return cells.map((cell) => cell.textContent);
       });
 
-      // Buat worksheet baru dari data yang diambil
-      const newWorksheet = XLSX.utils.aoa_to_sheet(data);
+      // Gabungkan data baru dengan data yang sudah ada
+      const combinedData = [...originalData, ...newData.slice(1)];
+
+      // Urutkan data berdasarkan kolom pertama (misalnya ID atau tanggal)
+      combinedData.sort((a, b) => a[0] - b[0]);
+
+      // Buat worksheet baru dari data yang digabungkan
+      const newWorksheet = XLSX.utils.aoa_to_sheet(combinedData);
       
       // Buat workbook baru dan tambahkan worksheet ke dalamnya
       const newWorkbook = XLSX.utils.book_new();

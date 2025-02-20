@@ -65,16 +65,104 @@ if (isset($_POST['request_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Revisi Data</title>
     <link rel="icon" href="bar2.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; }
-        .container { max-width: 600px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        h1 { text-align: center; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; padding: 10px; background-color:rgb(247, 41, 75); color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color:rgb(255, 58, 84); }
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+            background-color: #ffffff;
+         }
+        .container {
+            max-width: 800px; 
+            margin:250px auto;
+            padding: 20px;
+            background: white; 
+            border-radius: 8px;
+        }
+
+        .navbar {
+            background-color: #e01432;
+            font-size: 1.1rem;
+            padding: 14px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: #e01432 !important;
+            color: white !important;
+            border-radius: 5px;
+        }
+            
+        h1 {
+            text-align: center; 
+            }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+            }
+        button { 
+            width: 100%;
+            padding: 10px; 
+            background-color:rgb(255, 48, 65);
+            color: white; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            }
+        button:hover { 
+            background-color:rgb(243, 42, 42);
+        }
     </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="user.html">
+                <img src="logo.png" alt="SOREX4 Logo" width="100" height="50" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link active" href="user.html">Home</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="log.html">Log Aktivitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="download_filter.html">Download Data</a>
+                    </li>
+                    <!-- <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           Revisi Data
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="revisi.php">JB & JR</a></li>
+                            <li><a class="dropdown-item" href="revisi2.php">JT, DK & LP</a></li>
+                        </ul>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 <div class="container">
     <h1>Form Revisi Data</h1>
