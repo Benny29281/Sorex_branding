@@ -10,7 +10,7 @@ $client->setAuthConfig('credentials.json'); // Pastikan path-nya bener
 $client->setScopes([Sheets::SPREADSHEETS]);
 $service = new Sheets($client);
 
-$spreadsheetId = '1bgD6itsQmFsEU76RhdVsWmd8qmMcyFAKcVGkuwC82tk'; // Ganti sama ID spreadsheet lo
+$spreadsheetId = '1liQU4eJI0Y-9yW0ZKFh8nAcD1VkgAk77WVlLUbjvB7M'; // Ganti sama ID spreadsheet lo
 $range = 'Sheet1!A1:Z'; // Range sesuai sheet lo
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -87,8 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $params = ['valueInputOption' => 'USER_ENTERED'];
     $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
 
-    // Log aktivitas dengan format yang lo minta
-    $logFile = 'activity_log.txt';
+    $logFile = 'activity_log2.txt';
     $dateTime = date("d F Y H:i:s");
     $email = $_POST['email'] ?? 'Unknown';
     $storeName = $_POST['store_name'] ?? 'Unknown Store';
@@ -96,7 +95,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $logMessage = "{$dateTime} | ID: {$newId} | Email: {$email} | Request: {$request} | Toko: {$storeName}\n";
     file_put_contents($logFile, $logMessage, FILE_APPEND);
-
 
     // Kirim email ke user dengan no ID request
     $to = $_POST['email'];
