@@ -1,133 +1,133 @@
 <?php
 require 'vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use Google\Client;
+use Google\Service\Sheets;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Ambil data dari form
-    $request_id = isset($_POST['request_id']) ? trim((string) $_POST['request_id']) : '';
-    $email = $_POST['email'];
-    $area_sales = $_POST['area_sales'];
-    $sales_code = $_POST['sales_code'];
-    $store_name = $_POST['store_name'];
-    $spv_name = $_POST['spv_name'];
-    $location = $_POST['location'];
-    $request_type = $_POST['request_type'];
+    $request_id     = isset($_POST['request_id']) ? trim((string) $_POST['request_id']) : '';
+    $email          = $_POST['email'];
+    $area_sales     = $_POST['area_sales'];
+    $sales_code     = $_POST['sales_code'];
+    $store_name     = $_POST['store_name'];
+    $spv_name       = $_POST['spv_name'];
+    $location       = $_POST['location'];
+    $request_type   = $_POST['request_type'];
     $branding_tools = $_POST['branding_tools'];
-    $tools_size = $_POST['tools_size'];
-    $quantity = $_POST['quantity'];
-    $brand = $_POST['brand'];
-    $delivery = $_POST['delivery'];
+    $tools_size     = $_POST['tools_size'];
+    $quantity       = $_POST['quantity'];
+    $brand          = $_POST['brand'];
+    $delivery       = $_POST['delivery'];
     $additional_notes = $_POST['additional_notes'];
+
+    // Proses upload foto
+    $uploadDir = "uploads/";
+    $baseUrl = "http://localhost/Branding/uploads/"; // Ganti sesuai domain lo
+    $installationPhotoLink = "";
+    $designPhotoLink = "";
+
+    // Foto area pemasangan
+    if (isset($_FILES['installation_photo']) && $_FILES['installation_photo']['error'] === UPLOAD_ERR_OK) {
+        $installationPhotoName = basename($_FILES['installation_photo']['name']);
+        $installationPhotoPath = $uploadDir . $installationPhotoName;
+        if(move_uploaded_file($_FILES['installation_photo']['tmp_name'], $installationPhotoPath)) {
+            $installationPhotoLink = $baseUrl . $installationPhotoName;
+        }
+    }
+    // Foto sugest design
+    if (isset($_FILES['design_photo']) && $_FILES['design_photo']['error'] === UPLOAD_ERR_OK) {
+        $designPhotoName = basename($_FILES['design_photo']['name']);
+        $designPhotoPath = $uploadDir . $designPhotoName;
+        if(move_uploaded_file($_FILES['design_photo']['tmp_name'], $designPhotoPath)) {
+            $designPhotoLink = $baseUrl . $designPhotoName;
+        }
+    }
     
+    // Buat formula hyperlink untuk foto, kalau ada
+    $installationPhotoCell = $installationPhotoLink ? '=HYPERLINK("' . $installationPhotoLink . '", "Lihat Foto")' : '';
+    $designPhotoCell = $designPhotoLink ? '=HYPERLINK("' . $designPhotoLink . '", "Lihat Foto")' : '';
 
-    // Daftar file Excel yang akan diperbarui
-    $files = ['gform_JB_JR.xlsx'];
-    $data_added = false;
-    $updated_request_id = null;
+    // Susun data revisi sesuai urutan kolom di spreadsheet
+    // Kolom: A: request_id, B: kosong, C: email, D: area_sales, E: sales_code,
+    // F: store_name, G: spv_name, H: location, I: request_type, J: branding_tools,
+    // K: tools_size, L: quantity, M: brand, N: delivery, O: additional_notes,
+    // P: keterangan revisi, Q: foto area pemasangan, R: sugest design
+    $rowData = [
+        $request_id,
+        '', // Kolom B biar kosong
+        $email,
+        $area_sales,
+        $sales_code,
+        $store_name,
+        $spv_name,
+        $location,
+        $request_type,
+        $branding_tools,
+        $tools_size,
+        $quantity,
+        $brand,
+        $delivery,
+        $additional_notes,
+        "Revised: " . $request_id,
+        $installationPhotoCell,
+        $designPhotoCell
+    ];
 
-    // Loop untuk mencari ID pada kedua file Excel
-    foreach ($files as $file) {
-        if (!file_exists($file)) {
-            continue; // Skip jika file tidak ada
-        }
+    // Inisialisasi Google Client
+    $client = new Client();
+    $client->setAuthConfig('credentials.json'); // pastikan path credentials bener
+    $client->setScopes([Sheets::SPREADSHEETS]);
+    $service = new Sheets($client);
 
-        // Membaca file Excel
-        $spreadsheet = IOFactory::load($file);
-        $sheet = $spreadsheet->getActiveSheet();
+    $spreadsheetId = '1bgD6itsQmFsEU76RhdVsWmd8qmMcyFAKcVGkuwC82tk'; // Ganti dengan ID spreadsheet lo
+    $range = 'Sheet1!A:R';  // Data ada di kolom A sampai R (18 kolom)
 
-        // Cari apakah ID sudah ada di dalam file
-        $found = false;
-        foreach ($sheet->getRowIterator() as $row) {
-            $rowData = [];
-            foreach ($row->getCellIterator() as $cell) {
-                $rowData[] = $cell->getValue();
+    // Ambil data sheet untuk cek apakah request_id udah ada
+    $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+    $values = $response->getValues();
+
+    $rowIndex = null; // Akan diisi kalau ketemu
+    if (!empty($values)) {
+        // Loop mulai dari baris kedua (skip header) karena baris pertama header
+        for ($i = 1; $i < count($values); $i++) {
+            $row = $values[$i];
+            // Cek kolom A (index 0)
+            if (isset($row[0]) && trim($row[0]) === $request_id) {
+                // Baris ditemukan, simpan nomor baris (1-indexed)
+                $rowIndex = $i + 1;
+                break;
             }
-
-            // Jika ID ditemukan, tandai bahwa ID sudah ada dan update data
-            if (isset($rowData[0]) && (string) trim($rowData[0]) === (string) $request_id) {
-                // Update data pada baris yang sesuai
-                $rowIndex = $row->getRowIndex(); // Mengetahui baris ID ditemukan
-                $sheet->setCellValue('A' . $rowIndex, $request_id); // Tetap menggunakan request_id yang sama
-                $sheet->setCellValue('C' . $rowIndex, $email);
-                $sheet->setCellValue('D' . $rowIndex, $area_sales);
-                $sheet->setCellValue('E' . $rowIndex, $sales_code);
-                $sheet->setCellValue('F' . $rowIndex, $store_name);
-                $sheet->setCellValue('G' . $rowIndex, $spv_name);
-                $sheet->setCellValue('H' . $rowIndex, $location);
-                $sheet->setCellValue('I' . $rowIndex, $request_type);
-                $sheet->setCellValue('J' . $rowIndex, $branding_tools);
-                $sheet->setCellValue('K' . $rowIndex, $tools_size);
-                $sheet->setCellValue('L' . $rowIndex, $quantity);
-                $sheet->setCellValue('M' . $rowIndex, $brand);
-                $sheet->setCellValue('N' . $rowIndex, $delivery);
-                $sheet->setCellValue('O' . $rowIndex, $additional_notes);
-                $sheet->setCellValue('P' . $rowIndex, "Revised: " . $request_id); // Menambahkan keterangan revisi
-
-                // Tandai bahwa data telah berhasil diperbarui
-                $updated_request_id = $request_id;
-                $data_added = true;
-                break; // Keluar dari loop setelah menemukan dan memperbarui data
-            }
-        }
-
-        // Jika ID tidak ditemukan, cari baris kosong untuk menambahkan data baru
-        if (!$found) {
-            // Cari baris kosong terakhir untuk menambahkan data baru
-            $rowIndex = $sheet->getHighestRow() + 1; // Mendapatkan baris kosong berikutnya
-
-            // Tambahkan data baru di baris kosong
-            $sheet->setCellValue('A' . $rowIndex, $request_id);  // Tetap menggunakan request_id yang sama
-            $sheet->setCellValue('B' . $rowIndex, '');           // Biarkan kosong untuk kolom yang tidak perlu diisi
-            $sheet->setCellValue('C' . $rowIndex, $email);
-            $sheet->setCellValue('D' . $rowIndex, $area_sales);
-            $sheet->setCellValue('E' . $rowIndex, $sales_code);
-            $sheet->setCellValue('F' . $rowIndex, $store_name);
-            $sheet->setCellValue('G' . $rowIndex, $spv_name);
-            $sheet->setCellValue('H' . $rowIndex, $location);
-            $sheet->setCellValue('I' . $rowIndex, $request_type);
-            $sheet->setCellValue('J' . $rowIndex, $branding_tools);
-            $sheet->setCellValue('K' . $rowIndex, $tools_size);
-            $sheet->setCellValue('L' . $rowIndex, $quantity);
-            $sheet->setCellValue('M' . $rowIndex, $brand);
-            $sheet->setCellValue('N' . $rowIndex, $delivery);
-            $sheet->setCellValue('O' . $rowIndex, $additional_notes);          
-
-            // Tandai bahwa data baru telah ditambahkan
-            $updated_request_id = $request_id;
-            $data_added = true;
-            break; // Keluar dari loop setelah berhasil menambahkan data
         }
     }
 
-    // Jika data berhasil ditambahkan atau diperbarui, simpan perubahan ke file
-    if ($data_added) {
-        // Menyimpan perubahan ke file yang diperbarui
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($file);  // Menyimpan file yang telah diperbarui
-        echo "Data berhasil disimpan $updated_request_id";
+    // Buat objek ValueRange buat update/append
+    $body = new Sheets\ValueRange([
+        'values' => [$rowData]
+    ]);
+    $params = ['valueInputOption' => 'USER_ENTERED'];
+
+    if ($rowIndex !== null) {
+        // Kalau request_id ditemukan, update baris tersebut
+        $updateRange = 'Sheet1!A' . $rowIndex . ':R' . $rowIndex;
+        $result = $service->spreadsheets_values->update($spreadsheetId, $updateRange, $body, $params);
+        $updated_request_id = $request_id;
     } else {
-        echo "Gagal menambahkan data!";
+        // Kalau request_id tidak ditemukan, append data di baris baru
+        $result = $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+        $updated_request_id = $request_id;
     }
 
-     // Simpan log aktivitas
-     $logFile = 'activity_log.txt';
-     $dateTime = date("d F Y H:i:s");
-     $id = isset($request_id) ? $request_id : 'Unknown';  // Pastikan ada ID atau fallback
-     $email = isset($_POST['email']) ? $_POST['email'] : 'Unknown';
-     $storeName = isset($_POST['store_name']) ? $_POST['store_name'] : 'Unknown Store';
-     $request = 'Branding Request';  // Sesuaikan dengan jenis request yang ada, bisa diubah dinamis
- 
-     // Format log sesuai dengan kebutuhan
-     $logMessage = "{$dateTime} | ID: {$id} | Email: {$email} | Request: {$request} | Toko: {$storeName}\n";
- 
-     // Simpan ke file log
-     file_put_contents($logFile, $logMessage, FILE_APPEND);
+    // Simpan log aktivitas
+    $logFile = 'activity_log.txt';
+    $dateTime = date("d F Y H:i:s");
+    $logMessage = "{$dateTime} | ID: {$request_id} | Email: {$email} | Request: Branding Request | Toko: {$store_name}\n";
+    file_put_contents($logFile, $logMessage, FILE_APPEND);
 
-    // Arahkan kembali setelah proses selesai
+    // Tampilkan alert dan redirect ke halaman user
     echo "<script>
-        alert('Data berhasil Direvisi $updated_request_id');
-        window.location.href = 'user.html'; // Ganti dengan URL menu user
+        alert('Data berhasil Direvisi dengan ID $updated_request_id');
+        window.location.href = 'user.html';
     </script>";
 }
 ?>

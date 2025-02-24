@@ -1,120 +1,120 @@
 <?php
-// Include autoloader PhpSpreadsheet
+// Include autoloader Google API & PhpSpreadsheet
 require 'vendor/autoload.php';
 
+use Google\Client;
+use Google\Service\Sheets;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $search = trim($_POST['search']); // Ambil input pencarian
-    $search = strtolower($search);   // Ubah ke huruf kecil agar pencarian tidak case-sensitive
+// Setup Google Client
+$client = new Client();
+$client->setAuthConfig('credentials.json'); // Pastikan path-nya bener
+$client->setScopes([Sheets::SPREADSHEETS_READONLY]);
 
-    // List file Excel yang mau dibaca
-    $files = ['branding_JB_JR.xlsx','branding_JT_DK_LP.xlsx']; // Tambahkan file Excel di sini
-    $results = [];
+$service = new Sheets($client);
 
-    foreach ($files as $file) {
-        if (file_exists($file)) {
-            // Baca file Excel
-            $spreadsheet = IOFactory::load($file);
-            $sheet = $spreadsheet->getActiveSheet();
-            
-            // Loop melalui setiap baris
-            foreach ($sheet->getRowIterator() as $row) {
-                $rowData = [];
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false); // Include semua sel, meskipun kosong
-                
-                // Ambil data dari setiap sel di baris
-                foreach ($cellIterator as $cell) {
-                    $rowData[] = $cell->getFormattedValue();
-                }
-                
-                // Cek apakah input pencarian cocok dengan salah satu kolom (seluruh baris)
-                $rowText = strtolower(implode(' ', $rowData)); // Gabungkan seluruh data per baris untuk pencarian
-                if (strpos($rowText, $search) !== false) {
-                    $results[] = $rowData; // Jika cocok, simpan hasilnya
-                }
-            }
+// Array Spreadsheet ID lo
+$spreadsheetIds = [
+    '1gn8kwSHxGMLhMlJZHydb02wmMrxUpZ_puAFfF1fYHu8',
+    '1Lq436zcFSmbx9a-Tv2dLLn5es8rX0G4u4vML1_UWdQI'
+];
+$range = 'Sheet1'; // Range yang mau lo ambil
+
+$allData = [];
+$headers = null;
+
+// Loop tiap spreadsheet dan merge data
+foreach ($spreadsheetIds as $id) {
+    $response = $service->spreadsheets_values->get($id, $range);
+    $values = $response->getValues();
+    if (!empty($values)) {
+        // Ambil header dari file pertama
+        if (!$headers) {
+            $headers = $values[0]; // asumsinya header di baris pertama
         }
-    }
-
-    if (!empty($results)) {
-        // Generate file Excel untuk download
-        $outputSpreadsheet = new Spreadsheet();
-        $outputSheet = $outputSpreadsheet->getActiveSheet();
-
-        // Tambahkan header ke file Excel
-        $headers = ["TANGGAL", "NAMA SALES", "REQUEST CODE", "NAMA TOKO", "AREA", "TIPE (B/P)", "VIA", "PERMINTAAN", "QTY", "PEMBUATAN DESIGN PIC: TEAM DESIGN",
-                    "APPROVE LADDER", "APPROVAL TOKO PIC:TEAM SALES", "KONFIRMASI DESIGN PIC: TEAM SALES", "KIRIM PO PIC:TEAM DESIGN TANGGAL", "VENDOR", "SJ DI TERIMA TASYA",
-                    "PO SELESAI DI BUAT DAN DI KIRIM KE K", "GUDANG K PACKING", "KIRIM", "DADAP TERIMA DARI GUDANG K", "KIRIM", "KONFIRMASI PENERIMAAN PIC:TEAM SALES"];
-        $outputSheet->fromArray($headers, null, 'A1');
-
-        // Tambahkan data hasil pencarian ke file Excel
-        $outputSheet->fromArray($results, null, 'A2');
-
-        // Simpan file Excel sementara
-        $filename = 'hasil_pencarian.xlsx';
-        $writer = new Xlsx($outputSpreadsheet);
-        $writer->save($filename);
-
-        // Tampilkan tombol download di atas tabel
-        echo "<div style='display: flex; justify-content: space-between; align-items: center;'>";
-        echo "<h1>Hasil Pencarian:</h1>";
-        echo "<a href='$filename' download style='margin-right: 20px; text-decoration: none; background:rgb(250, 39, 23); color: white; padding: 10px 15px; border-radius: 5px;'>Download Hasil Pencarian</a>";
-        echo "</div>";
-
-        // Tampilkan tabel hasil pencarian
-        echo "<table border='1'>";
-        echo "<tr><th>TANGGAL</th><th>NAMA SALES</th><th>REQUEST CODE</th><th>NAMA TOKO</th><th>AREA</th><th>TIPE (B/P)</th><th>VIA</th><th>PERMINTAAN</th><th>QTY</th><th>PEMBUATAN DESIGN PIC: TEAM DESIGN</th>
-        <th>APPROVE LADDER</th><th>APPROVAL TOKO PIC:TEAM SALES</th><th>KONFIRMASI DESIGN PIC: TEAM SALES</th><th>KIRIM PO PIC:TEAM DESIGN TANGGAL</th><th>VENDOR</th><th>SJ DI TERIMA TASYA</th>
-        <th>PO SELESAI DI BUAT DAN DI KIRIM KE K</th><th>GUDANG K PACKING</th><th>KIRIM</th><th>DADAP TERIMA DARI GUDANG K</th><th>KIRIM</th><th>KONFIRMASI PENERIMAAN PIC:TEAM SALES</th></tr>";
-        foreach ($results as $row) {
-            echo "<tr><td>" . implode('</td><td>', $row) . "</td></tr>";
-        }
-        echo "</table>";
+        // Ambil data rows, skip header tiap file
+        $dataRows = array_slice($values, 1);
+        $allData = array_merge($allData, $dataRows);
     } else {
-        echo "<h1>Tidak ada data yang cocok!</h1>";
+        die("Data ga ada di Spreadsheet ID: {$id}!");
     }
-    echo "<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+// Proses pencarian dari form
+$results = [];
+$search = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $search = strtolower(trim($_POST['search']));
+    foreach ($allData as $row) {
+        $rowText = strtolower(implode(' ', $row));
+        if (strpos($rowText, $search) !== false) {
+            $results[] = $row;
+        }
     }
 
-    table, th, td {
-        border: 1px solid #ddd;
-    }
+    // Jika ada hasil, buat file Excel
+    if (!empty($results)) {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-    th {
-        background-color: #4CAF50;
-        color: white;
-        text-align: center;
-        padding: 10px;
-    }
+        // Set header
+        $sheet->fromArray([$headers], NULL, 'A1');
+        // Set data hasil pencarian
+        $sheet->fromArray($results, NULL, 'A2');
 
-    td {
-        text-align: center;
-        padding: 8px;
-        background-color: #f8f8f8;
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'hasil_pencarian.xlsx';
+        $writer->save($filename);
     }
-
-    tr:nth-child(even) td {
-        background-color: #e9f7e9; /* Warna hijau muda */
-    }
-
-    tr:nth-child(odd) td {
-        background-color: #ffffff; /* Warna putih */
-    }
-
-    .highlight {
-        background-color: #ffd700; /* Warna kuning buat highlight */
-        font-weight: bold;
-    }
-</style>";
-
 }
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Google Sheets</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+        }
+        td {
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Cari Data Google Sheets</h2>
+    <?php if (!empty($results)) : ?>
+        <h3>Hasil Pencarian:</h3>
+        <a href="hasil_pencarian.xlsx" download>Download Hasil Pencarian</a>
+        <table>
+            <tr>
+                <?php foreach ($headers as $header) : ?>
+                    <th><?php echo htmlspecialchars($header); ?></th>
+                <?php endforeach; ?>
+            </tr>
+            <?php foreach ($results as $row) : ?>
+                <tr>
+                    <?php for ($i = 0; $i < count($headers); $i++) : ?>
+                        <td><?php echo isset($row[$i]) ? htmlspecialchars($row[$i]) : ''; ?></td>
+                    <?php endfor; ?>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST') : ?>
+        <h3>Tidak ada data yang cocok!</h3>
+    <?php endif; ?>
+</body>
+</html>

@@ -1,29 +1,39 @@
 <?php
-require 'vendor/autoload.php'; // Pastikan path library-nya sesuai
+require 'vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Google\Client;
+use Google\Service\Sheets;
+
+// Setup Google Client buat akses Sheets API
+$client = new Client();
+$client->setAuthConfig('credentials.json'); // Pastikan path-nya bener
+$client->setScopes([Sheets::SPREADSHEETS]);
+$service = new Sheets($client);
+
+$spreadsheetId = '1bgD6itsQmFsEU76RhdVsWmd8qmMcyFAKcVGkuwC82tk'; // Ganti sama ID spreadsheet lo
+$range = 'Sheet1!A1:Z'; // Range sesuai sheet lo
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Generate Request ID
     $lastIdFile = 'last_id.txt';
-    $lastId = 530;  // Default ID mulai dari 600
+    $lastId = 530; // Default, bisa diubah sesuai kebutuhan
     $prefix = 'RB';
 
     if (file_exists($lastIdFile)) {
         $lastId = (int)file_get_contents($lastIdFile);
     }
-
     $newId = $prefix . $lastId;
     $lastId++;
     file_put_contents($lastIdFile, $lastId);
 
     $tanggalSubmit = date("d F Y");
 
+    // Proses upload foto
     $uploadDir = "uploads/";
-    $baseUrl = "http://localhost/Branding/uploads/"; // Ganti dengan domain atau IP server lu
+    $baseUrl = "http://localhost/Branding/uploads/"; // Ganti sesuai domain lo
     $installationPhotoLink = "";
     $designPhotoLink = "";
-    
+
     if (isset($_FILES['installation_photo']) && $_FILES['installation_photo']['error'] === UPLOAD_ERR_OK) {
         $installationPhotoName = basename($_FILES['installation_photo']['name']);
         $installationPhotoPath = $uploadDir . $installationPhotoName;
@@ -38,61 +48,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $designPhotoLink = $baseUrl . $designPhotoName;
     }
 
+    // Gabungin input dropdown "branding tools" kalo pilih "Lainnya"
     $brandingTools = $_POST['branding_tools'];
-    $otherTools = trim($_POST['other_tools']); // Ambil input dari other_tools (kalau ada)
-    
-    // Gabungkan kalau user pilih "Lainnya" di dropdown
+    $otherTools = trim($_POST['other_tools']);
     if ($brandingTools === 'Lainnya' && !empty($otherTools)) {
-        $brandingTools .= " - " . $otherTools; // Tambahin input ke teks "Lainnya"
+        $brandingTools .= " - " . $otherTools;
     }
 
-    $data = [
-        'Tanggal Submit' => strtoupper($tanggalSubmit),
-        'ID' => strtoupper($newId),
-        'Email' => strtoupper($_POST['email']),
-        'Area Sales' => strtoupper($_POST['area_sales']),
-        'Nama Sales' => strtoupper($_POST['sales_code']),
-        'Nama SPV' => strtoupper($_POST['spv_name']),
-        'Nama Toko' => strtoupper($_POST['store_name']),
-        'Lokasi' => strtoupper($_POST['location']),
-        'Jenis Permintaan' => strtoupper($_POST['request_type']),
-        'Tools Branding' => strtoupper($brandingTools),
-        'Ukuran Tools' => strtoupper($_POST['tools_size']),
-        'Qty' => strtoupper($_POST['quantity']),
-        'Brand' => strtoupper($_POST['brand']),
-        'Pengiriman' => strtoupper($_POST['delivery']),
-        'Keterangan Tambahan' => strtoupper(isset($_POST['additional_notes']) && !empty($_POST['additional_notes']) ? $_POST['additional_notes'] : 'N/A'),
-        'Foto Area Pemasangan' => strtoupper($installationPhotoLink),
-        'Foto Sugest Desain' => strtoupper($designPhotoLink)
+    // Bikin formula HYPERLINK buat foto, biar bisa diklik langsung dari Google Sheets
+    $installationPhotoCell = $installationPhotoLink ? '=HYPERLINK("' . $installationPhotoLink . '", "Lihat Foto")' : '';
+    $designPhotoCell = $designPhotoLink ? '=HYPERLINK("' . $designPhotoLink . '", "Lihat Foto")' : '';
 
+    // Data yang mau dikirim ke Google Sheets
+    $data = [
+        strtoupper($tanggalSubmit),
+        strtoupper($newId),
+        strtoupper($_POST['email']),
+        strtoupper($_POST['area_sales']),
+        strtoupper($_POST['sales_code']),
+        strtoupper($_POST['spv_name']),
+        strtoupper($_POST['store_name']),
+        strtoupper($_POST['location']),
+        strtoupper($_POST['request_type']),
+        strtoupper($brandingTools),
+        strtoupper($_POST['tools_size']),
+        strtoupper($_POST['quantity']),
+        strtoupper($_POST['brand']),
+        strtoupper($_POST['delivery']),
+        strtoupper($_POST['additional_notes'] ?? 'N/A'),
+        $installationPhotoCell,
+        $designPhotoCell
     ];
 
-    $fileName = "gform_JB_JR.xlsx";
-    if (file_exists($fileName)) {
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fileName);
-        $sheet = $spreadsheet->getActiveSheet();
-    } else {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->fromArray(array_keys($data), NULL, 'A1');
-    }
+    // Append data ke spreadsheet pake USER_ENTERED buat nge-proses formula
+    $body = new Sheets\ValueRange([
+        'values' => [$data]
+    ]);
+    $params = ['valueInputOption' => 'USER_ENTERED'];
+    $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
 
-    $row = $sheet->getHighestRow() + 1;
-    $sheet->fromArray(array_values($data), NULL, 'A' . $row);
-
-    if ($installationPhotoLink) {
-        $sheet->setCellValue('P' . $row, 'Lihat Foto');
-        $sheet->getCell('P' . $row)->getHyperlink()->setUrl($installationPhotoLink);
-    }
-    
-    if ($designPhotoLink) {
-        $sheet->setCellValue('Q' . $row, 'Lihat Foto');
-        $sheet->getCell('Q' . $row)->getHyperlink()->setUrl($designPhotoLink);
-    }
-
-    $writer = new Xlsx($spreadsheet);
-    $writer->save($fileName);
-
+    // Log aktivitas dengan format yang lo minta
     $logFile = 'activity_log.txt';
     $dateTime = date("d F Y H:i:s");
     $email = $_POST['email'] ?? 'Unknown';
@@ -102,23 +97,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $logMessage = "{$dateTime} | ID: {$newId} | Email: {$email} | Request: {$request} | Toko: {$storeName}\n";
     file_put_contents($logFile, $logMessage, FILE_APPEND);
 
+
+    // Kirim email ke user dengan no ID request
     $to = $_POST['email'];
-    $subject = 'Branding Request ID - ' . $newId;
-    $message = "
-        Halo,
-
-        Terima kasih telah mengirim permintaan branding. Berikut adalah ID permintaan Anda: $newId.
-
-        Jika Anda memiliki pertanyaan atau perlu bantuan lebih lanjut, silakan hubungi kami.
-
-        Terima kasih,
-        Tim Branding
-    ";
-    $headers = "From: no-reply@gmail.com" . "\r\n" .
-               "Reply-To: support@gmail.com" . "\r\n" .
+    $subject = "Branding Request ID - " . $newId;
+    $message = "Halo,\n\nTerima kasih udah ngirim form branding. Request ID lo adalah: " . $newId . ".\n\nKalo ada pertanyaan, langsung aja hubungi Admin ya.\n\nSalam,\nTim Branding";
+    $headers = "From: no-reply@yourdomain.com\r\n" .
+               "Reply-To: support@yourdomain.com\r\n" .
                "Content-Type: text/plain; charset=UTF-8";
 
+    // Cek apakah email berhasil dikirim
     if (mail($to, $subject, $message, $headers)) {
+        $emailStatus = "Email berhasil dikirim.";
+    } else {
+        $emailStatus = "Gagal ngirim email.";
+    }
+
+    // Tampilkan alert modal setelah submit
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             var id = '" . $newId . "';
@@ -138,7 +133,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             alertDiv.innerHTML = `
                 <p style='margin-bottom: 15px; font-size: 16px;'>Request ID kamu adalah:</p>
-                <strong style='font-size: 20px; color: #007BFF;'>" . $newId . "</strong>
+                <strong style='font-size: 20px; color: #007BFF;'>` + id + `</strong>
+                <p style='margin-top:10px; font-size:14px;'>` + '" . $emailStatus . "' + `</p>
                 <div style='margin-top: 15px;'>
                     <button id='copyButton' style='background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;'>Copy ID</button>
                     <button id='closeButton' style='background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;'>Close</button>
@@ -146,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             `;
             document.body.appendChild(alertDiv);
 
-            // Copy to clipboard
+            // Fungsi copy ID ke clipboard
             document.getElementById('copyButton').addEventListener('click', function() {
                 navigator.clipboard.writeText(id).then(function() {
                     alert('ID berhasil disalin ke clipboard!');
@@ -155,18 +151,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 });
             });
 
-            // Close alert
+            // Fungsi close alert dan redirect ke user.html
             document.getElementById('closeButton').addEventListener('click', function() {
                 alertDiv.remove();
                 window.location.href = 'user.html';
             });
         });
     </script>";
-} else {
-    echo "<script>
-        alert('Gagal mengirim email, coba lagi!');
-        window.location.href = 'user.html';
-    </script>";
 }
-
-}
+?>
