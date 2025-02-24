@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" href="bar2.png" type="image/png">
     <title>Search Google Sheets</title>
     <style>
         table {
