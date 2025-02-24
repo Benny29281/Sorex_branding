@@ -106,6 +106,30 @@ if (isset($_POST['request_id'])) {
       border: 1px solid #ccc; 
       border-radius: 4px;
     }
+
+    /* Styling khusus buat navbar button */
+.navbar-toggler {
+  width: 60px; /* ukuran bisa diatur sesuai selera */
+  height: 50px;
+  background-color: #e01432;
+  border: 2px solid #e01432;
+}
+
+/* Styling khusus buat submit button */
+.btn-submit {
+  width: 100%;  /* atau atur ukuran sesuai keinginan */
+  padding: 10px;
+  background-color: rgb(255, 48, 65);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: rgb(243, 42, 42);
+}
+
     button { 
       width: 100%;
       padding: 10px; 
@@ -118,6 +142,9 @@ if (isset($_POST['request_id'])) {
     button:hover { 
       background-color: rgb(243, 42, 42);
     }
+
+    
+    
   </style>
 </head>
 <body>
@@ -244,7 +271,7 @@ if (isset($_POST['request_id'])) {
         <label for="design_photo">Foto Sugest Design:</label>
         <input type="file" id="design_photo" name="design_photo">
 
-        <button type="submit">Kirim Revisi</button>
+        <button type="submit" class="btn-submit">Kirim Revisi</button>
       </form>
     <?php endif; ?>
   </div>

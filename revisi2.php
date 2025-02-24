@@ -118,12 +118,34 @@ if (isset($_POST['request_id'])) {
     button:hover { 
       background-color: rgb(243, 42, 42);
     }
+
+    .navbar-toggler {
+  width: 60px; /* ukuran bisa diatur sesuai selera */
+  height: 50px;
+  background-color: #e01432;
+  border: 2px solid #e01432;
+}
+
+/* Styling khusus buat submit button */
+.btn-submit {
+  width: 100%;  /* atau atur ukuran sesuai keinginan */
+  padding: 10px;
+  background-color: rgb(255, 48, 65);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: rgb(243, 42, 42);
+}
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="user.html">
+      <a class="navbar-brand" href="user2.html">
         <img src="logo.png" alt="SOREX4 Logo" width="100" height="50" class="d-inline-block align-text-top">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
@@ -245,7 +267,7 @@ if (isset($_POST['request_id'])) {
         <label for="design_photo">Foto Sugest Design:</label>
         <input type="file" id="design_photo" name="design_photo">
 
-        <button type="submit">Kirim Revisi</button>
+        <button type="submit" class="btn-submit">Kirim Revisi</button>
       </form>
     <?php endif; ?>
   </div>
